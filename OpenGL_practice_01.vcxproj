@@ -73,6 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\OpenGL\Include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\OpenGL\Libs;$(LibraryPath)</LibraryPath>
+    <AllProjectIncludesArePublic>false</AllProjectIncludesArePublic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,7 +137,11 @@
     <ClCompile Include="Src\glad.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="shader_class.h" />
+    <ClInclude Include="shader_h.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="fragment.txt" />
+    <Text Include="vertex.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

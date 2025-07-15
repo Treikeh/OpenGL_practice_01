@@ -2,31 +2,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <cmath>
+#include <shader_h.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-
-const char* vertexShaderSource =
-"#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"layout (location = 1) in vec3 aColor;\n"
-"out vec3 ourColor;\n"
-"void main()\n"
-"{\n"
-"gl_Position = vec4(aPos, 1.0);\n"
-"ourColor = aColor;\n"
-"};\0";
-
-const char* fragmentShaderSource =
-"#version 330 core\n"
-"out vec4 FragColor;\n"
-"in vec3 ourColor;\n"
-//"uniform vec4 ourColor;\n"
-//"in vec4 vertexColor;\n"
-"void main()\n"
-"{\n"
-"FragColor = vec4(ourColor, 1.0);\n"
-"};\0";
 
 int main()
 {
@@ -56,62 +35,7 @@ int main()
         return -1;
     }
 
-    // Error log variables
-    int success;
-    char infoLog[512];
-
-
-    // Crate vertex shader object
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    // Compile shader
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    // Check for vertex shader compile errors
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        printf("Vertex Shader compile error: %s\n", infoLog);
-    }
-
-
-    // Create fragment shader
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    // Compile fragment shader
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    // Check for fragment shader compile errors
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        printf("Fragment Shader compile error: %s\n", infoLog);
-
-    }
-
-
-    // Create shader program
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    // Attach shaders
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-    // Check for shader program linking errors
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        printf("Shader program error: %s\n", infoLog);
-    }
-
-
-    // Delete shaders
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
-
+    Shader ourShader("vertex.txt", "fragment.txt");
 
     // Babys first triangle
     float vertices[] = {
@@ -152,8 +76,8 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Use shader program
-        glUseProgram(shaderProgram);
+        // Use shader
+        ourShader.use();
 
         // Update shader
         //float timeValue = glfwGetTime();
