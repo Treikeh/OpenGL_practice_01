@@ -41,9 +41,9 @@ int main()
     // Babys first triangle
     float vertices[] = {
         // Position           // Colours          // Texture cords
-        0.0f,  0.5f,  0.0f,   1.0f, 0.0f, 0.0f,   0.5f, -1.4f,
-        0.5f,  -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f, // Top left
+         1.0f,  1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f, // Top right
+         0.0f, -1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   0.5f, 0.0f, // Bottom Center
     };
 
 
@@ -63,6 +63,7 @@ int main()
 
     // Load image
     int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load("Jaguar_face.jpg", &width, &height, &nrChannels, 0);
     if (data)
     {
@@ -113,15 +114,8 @@ int main()
         // Use shader
         ourShader.use();
 
-        // Update shader
-        //float timeValue = glfwGetTime();
-        //float greenValue = sin(timeValue) / 2.0f + 0.5f;
-        //int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        //glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-
         // Render triangle
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        //glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
