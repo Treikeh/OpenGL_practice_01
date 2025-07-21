@@ -142,6 +142,7 @@
     <Text Include="vertex.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="blog_eye.png" />
     <Image Include="Jaguar_face.jpg" />
   </ItemGroup>
   <ItemGroup>
