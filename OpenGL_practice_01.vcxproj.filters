@@ -37,6 +37,9 @@
     <Image Include="Jaguar_face.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="blog_eye.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader_h.h">
