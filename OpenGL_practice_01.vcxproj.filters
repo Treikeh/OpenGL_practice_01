@@ -37,7 +37,7 @@
     <Image Include="Jaguar_face.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="blog_eye.png">
+    <Image Include="blog_eye.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
