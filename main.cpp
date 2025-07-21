@@ -37,6 +37,7 @@ int main()
     }
 
     Shader ourShader("vertex.txt", "fragment.txt");
+    ourShader.use();
 
     // Babys first triangle
     float vertices[] = {
@@ -101,6 +102,8 @@ int main()
     glEnableVertexAttribArray(2);
 
 
+   
+
     // Render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -111,8 +114,6 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Use shader
-        ourShader.use();
 
         // Render triangle
         //glBindTexture(GL_TEXTURE_2D, texture);
