@@ -4,6 +4,9 @@
 #include <cmath>
 #include <shader_h.h>
 #include <stb_image.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
@@ -43,7 +46,14 @@ int main()
         // Position           // Colours          // Texture cords
         -1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f, // Top left
          1.0f,  1.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f, // Top right
-         0.0f, -1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   0.5f, 0.0f, // Bottom Center
+         1.0f, -1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+        -1.0f, -1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f, // Bottom Left
+
+    };
+
+    unsigned int indices[] = {
+        0, 1, 3,
+        2, 1, 3,
     };
 
 
@@ -110,8 +120,9 @@ int main()
 
 
     // Create vertices buffer and vertex array objects
-    unsigned int VBO, VAO;
+    unsigned int VBO, VAO, EBO;
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
@@ -119,6 +130,10 @@ int main()
     // Copy our vertices array in a buffer for OpenGL to use
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 
     // Tell OpenGL how to interpret our vertex data
@@ -140,16 +155,16 @@ int main()
     {
         // Input
         processInput(window);
-
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         // Rendering commands
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
 
         // Render triangle
-        //glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
 
         // Swap buffers and poll events
         glfwSwapBuffers(window);
