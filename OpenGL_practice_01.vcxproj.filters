@@ -24,6 +24,9 @@
     <ClCompile Include="stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="vertex.txt">
@@ -37,7 +40,7 @@
     <Image Include="Jaguar_face.jpg">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="blog_eye.jpg">
+    <Image Include="iSeeYou.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
