@@ -22,7 +22,7 @@
 using namespace std;
 
 
-unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
+unsigned int WTextureFromFile(const char* path, const string& directory, bool gamma = false);
 
 
 class Model
@@ -30,6 +30,7 @@ class Model
 public:
 	Model(string const& path)
 	{
+		//loadadaModel(path);
 		loadModel(path);
 	}
 
@@ -45,6 +46,12 @@ private:
 	vector<Mesh> meshes;
 	vector<Texture> textures_loaded;
 	string directory;
+
+
+	void loadadaModel(string const& path)
+	{
+		Assimp::Importer import;
+	}
 
 
 	void loadModel(string const& path)
@@ -154,7 +161,7 @@ private:
 			if (!skip)
 			{   // if texture hasn't been loaded already, load it
 				Texture texture;
-				texture.id = TextureFromFile(str.C_Str(), directory);
+				texture.id = WTextureFromFile(str.C_Str(), directory);
 				texture.type = typeName;
 				texture.path = str.C_Str();
 				textures.push_back(texture);
@@ -165,7 +172,7 @@ private:
 	}
 };
 
-unsigned int TextureFromFile(const char* path, const string& directory, bool gamma)
+unsigned int WTextureFromFile(const char* path, const string& directory, bool gamma)
 {
 	string filename = string(path);
 	filename = directory + '/' + filename;

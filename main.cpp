@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <shader_h.h>
-//#include <model.h>
+#include <model.h>
 #include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -75,7 +75,7 @@ int main()
 
     //Model ourModel("C:/Users/Treikeh/3D/backpack/backpack.obj");
 
-    /**/
+    
     float cube[] = {
        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -138,7 +138,32 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
-    Shader ourShader("vertex.txt", "fragment.txt");
+    // Create vertices buffer and vertex array objects
+    unsigned int VBO, VAO, EBO;
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    // Copy our vertices array in a buffer for OpenGL to use
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
+
+    // EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // Tell OpenGL how to interpret our vertex data
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // Color attribute
+    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
+    //glEnableVertexAttribArray(1);
+    // Texture cords attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
 
     // Textures
     unsigned int texture1, texture2;
@@ -170,7 +195,6 @@ int main()
     }
     stbi_image_free(data);
 
-
     // Eye texture
     glGenTextures(1, &texture2);
     glActiveTexture(GL_TEXTURE1);
@@ -196,48 +220,13 @@ int main()
     }
     stbi_image_free(data);
 
+    // Shader
+    Shader ourShader("vertex.txt", "fragment.txt");
     ourShader.use();
     ourShader.setInt("ourTexture", 0);
     ourShader.setInt("ourOtherTexture", 1);
-
-
-    // Create vertices buffer and vertex array objects
-    unsigned int VBO, VAO, EBO;
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    // Copy our vertices array in a buffer for OpenGL to use
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
-
-    // EBO
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // Tell OpenGL how to interpret our vertex data
-    // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    // Color attribute
-    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
-    //glEnableVertexAttribArray(1);
-    // Texture cords attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(2);
     
 
-
-
-    glm::mat4 model = glm::mat4(1.0f);
-    unsigned int modelTransformLoc = glGetUniformLocation(ourShader.ID, "model");
-
-    glm::mat4 view = glm::mat4(1.0f);
-    unsigned int viewTransformLoc = glGetUniformLocation(ourShader.ID, "view");
-
-    glm::mat4 proj = glm::mat4(1.0f);
-    unsigned int projTransformLoc = glGetUniformLocation(ourShader.ID, "proj");
 
 
     // Render loop
@@ -257,12 +246,27 @@ int main()
 
 
 
-        
-        // Render triangle
-        glBindVertexArray(VAO);
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        ourShader.use();
+        // Create and use view and proj matrices
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        ourShader.setMat4("view", view);
 
-        // Many cubes
+        glm::mat4 proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
+        ourShader.setMat4("proj", proj);
+
+        /*
+        // render the loaded model
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        ourModel.Draw(ourShader);
+        */
+
+        
+        
+        // Draw cubes
+        glm::mat4 model = glm::mat4(1.0f);
         for (unsigned int i = 0; i < 10; i++)
         {
             model = glm::mat4(1.0f);
@@ -273,21 +277,12 @@ int main()
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        // Render triangle
+        glBindVertexArray(VAO);
         
 
 
-
-        // Apply transform to vertex shader
-        glUniformMatrix4fv(modelTransformLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(viewTransformLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projTransformLoc, 1, GL_FALSE, glm::value_ptr(proj));
-
-        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
-
-
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
         // Swap buffers and poll events
         glfwSwapBuffers(window);
         glfwPollEvents();
