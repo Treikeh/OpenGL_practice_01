@@ -141,6 +141,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="fragment.txt" />
+    <Text Include="model_fragment.txt" />
+    <Text Include="model_vertex.txt" />
     <Text Include="vertex.txt" />
   </ItemGroup>
   <ItemGroup>

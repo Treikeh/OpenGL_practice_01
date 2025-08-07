@@ -38,6 +38,12 @@
     <Text Include="fragment.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="model_vertex.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="model_fragment.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Jaguar_face.jpg">

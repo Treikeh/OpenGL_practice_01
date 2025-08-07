@@ -3,11 +3,16 @@
 #include <GLFW/glfw3.h>
 #include <cmath>
 #include <shader_h.h>
+//#include <model.h>
 #include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <fstream>
+#include <sstream>
+#include <iostream>
+using namespace std;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -46,11 +51,11 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Load glad (we happy)
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -60,64 +65,64 @@ int main()
         return -1;
     }
 
-    Shader ourShader("vertex.txt", "fragment.txt");
+    stbi_set_flip_vertically_on_load(true);
 
-    // Babys first triangle
-    float vertices[] = {
-        // Position           // Colours          // Texture cords
-        -1.0f,  1.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f, // Top left
-         1.0f,  1.0f, 1.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f, // Top right
-         1.0f, -1.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
-        -1.0f, -1.0f, 0.0f,   0.0f, 0.0f, 0.0f,   0.0f, 0.0f, // Bottom Left
+    glEnable(GL_DEPTH_TEST);
+    //glEnable(GL_CULL_FACE);
+
+
+    //Shader ourShader("model_vertex.txt", "model_fragment.txt");
+
+    //Model ourModel("C:/Users/Treikeh/3D/backpack/backpack.obj");
+
+    /**/
+    float cube[] = {
+       -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+       -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+       -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+       -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+       -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+       -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+       -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+       -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+       -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
     unsigned int indices[] = {
         0, 1, 3,
         2, 1, 3,
-    };
-
-    float cube[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
     glm::vec3 cubePositions[] = {
@@ -133,6 +138,7 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
+    Shader ourShader("vertex.txt", "fragment.txt");
 
     // Textures
     unsigned int texture1, texture2;
@@ -152,7 +158,6 @@ int main()
 
     // Load Jaguar
     int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load("Jaguar_face.jpg", &width, &height, &nrChannels, 0);
     if (data)
     {
@@ -203,7 +208,6 @@ int main()
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-
     // Copy our vertices array in a buffer for OpenGL to use
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cube), cube, GL_STATIC_DRAW);
@@ -211,7 +215,6 @@ int main()
     // EBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
 
     // Tell OpenGL how to interpret our vertex data
     // position attribute
@@ -221,25 +224,22 @@ int main()
     //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
     //glEnableVertexAttribArray(1);
     // Texture cords attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(2);
+    
+
 
 
     glm::mat4 model = glm::mat4(1.0f);
     unsigned int modelTransformLoc = glGetUniformLocation(ourShader.ID, "model");
-    //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
 
     glm::mat4 view = glm::mat4(1.0f);
     unsigned int viewTransformLoc = glGetUniformLocation(ourShader.ID, "view");
-    //view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-
 
     glm::mat4 proj = glm::mat4(1.0f);
     unsigned int projTransformLoc = glGetUniformLocation(ourShader.ID, "proj");
 
-    glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
+
     // Render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -256,12 +256,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-        // Apply transform to vertex shader
-        glUniformMatrix4fv(modelTransformLoc, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(viewTransformLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projTransformLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
-
+        
         // Render triangle
         glBindVertexArray(VAO);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -277,6 +273,14 @@ int main()
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+        
+
+
+
+        // Apply transform to vertex shader
+        glUniformMatrix4fv(modelTransformLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(viewTransformLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(projTransformLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
         view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
