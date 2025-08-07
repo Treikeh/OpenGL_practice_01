@@ -71,11 +71,12 @@ int main()
     //glEnable(GL_CULL_FACE);
 
 
-    //Shader ourShader("model_vertex.txt", "model_fragment.txt");
+    Shader ourShader("model_vertex.txt", "model_fragment.txt");
 
     //Model ourModel("C:/Users/Treikeh/3D/backpack/backpack.obj");
+    Model ourModel("C:/Users/Treikeh/3D/Untitled.obj");
 
-    
+    /*
     float cube[] = {
        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -225,7 +226,7 @@ int main()
     ourShader.use();
     ourShader.setInt("ourTexture", 0);
     ourShader.setInt("ourOtherTexture", 1);
-    
+    */
 
 
 
@@ -254,17 +255,17 @@ int main()
         glm::mat4 proj = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
         ourShader.setMat4("proj", proj);
 
-        /*
+        
         // render the loaded model
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
         ourShader.setMat4("model", model);
         ourModel.Draw(ourShader);
-        */
+        
 
         
-        
+        /*
         // Draw cubes
         glm::mat4 model = glm::mat4(1.0f);
         for (unsigned int i = 0; i < 10; i++)
@@ -280,7 +281,7 @@ int main()
 
         // Render triangle
         glBindVertexArray(VAO);
-        
+        */
 
 
         // Swap buffers and poll events
